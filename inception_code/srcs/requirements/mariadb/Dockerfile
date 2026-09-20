@@ -37,9 +37,6 @@ ENV GOSU_VERSION=${GOSU_VERSION}
 ARG GOSU_GPG=B42F6819007F00F88E364FD4036A9C25BF357DD4
 
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
-    
-COPY tools/* /docker-entrypoint-initdb.d/
-RUN chmod -x /docker-entrypoint-initdb.d/*
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	ca-certificates \
@@ -106,12 +103,15 @@ RUN \
 VOLUME /var/lib/mysql
 
 COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 COPY tools/* /docker-entrypoint-initdb.d/
+RUN chmod -x /docker-entrypoint-initdb.d/*.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE ${MARIADB_PORT}
 
-CMD [ "mariadbd" ]
+CMD ["mariadbd"]

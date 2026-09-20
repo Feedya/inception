@@ -24,8 +24,15 @@ fi
 #mariadb-admin ping : c est une commande propre a Mariadb
 # elle ouvre une connexion TCP 
 #
-while ! mariadb-admin ping -h"mariadb" -u"$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD"; do
-    printf 'dans boucle connexion'
+while ! mariadb-admin \
+    --skip-ssl \
+    ping \
+    -h"mariadb" \
+    -u"$WORDPRESS_DB_USER" \
+    -p"$WORDPRESS_DB_PASSWORD" \
+    --silent
+do
+    echo "dans boucle connexion"
     sleep 2
 done
 
