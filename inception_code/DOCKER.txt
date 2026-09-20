@@ -1,0 +1,6 @@
+dans docker chaque container a 2 flux
+
+1er flux : c est la sortie standart du container
+2eme flux : c est le docker qui va test notre container (le healthcheck) pour voir si il va bien
+
+    le healthcheck : c est une commande declarer dans le .yaml ou dans le docker file 

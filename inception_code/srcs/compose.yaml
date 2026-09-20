@@ -1,0 +1,227 @@
+#
+name: inception
+
+#tout les services
+services:
+# nom de mon docker
+# -----------------------------------------------------------------------
+# MARIADB
+# -----------------------------------------------------------------------
+# identifiant du service il va servire comme adresse du service
+  mariadb:
+#specifie une maniere de forger une image personaliser
+    build:
+#ou se trouve le dockerfile de mariadb
+      context: ./requirements/mariadb
+#arguments que je donne pendant la phase de construction
+      args:
+#le {MARIADB_PORT} va venir du .env
+        MARIADB_PORT: ${MARIADB_PORT}
+#nom de l image sera mariadb et l etiquette sera inception
+    image: mariadb:inception
+#identifiant du container en cours d execution
+    container_name: mariadb
+#si il crash avec un code non null (pas 0) docker va le restart solo
+    restart: on-failure
+#on dit au container d ecouter sur le port {MARIADB_PORT} qui est dans env aussi
+    command: ["mariadbd", "--port=${MARIADB_PORT}"]
+#il sera connecter au inception en network
+    networks:
+      - inception
+#c est la ou il va stoquer les info qu on a besoin de garder
+#meme apres qu on eteints le docker
+#parceque quand on eteint un docker tout s efface
+#et on va garder l important ici
+    volumes:
+      - mariadb_data:/var/lib/mysql
+#les fichiers qui vonst etre injecter d une maniere securiser dans l image 
+    secrets:
+      - db_password
+      - db_root_password
+#va injecter ces variables dans le container
+    environment:
+      #doivent etre le meme chose comme dans wordpress
+      MARIADB_DATABASE: ${MYSQL_DATABASE}
+      MARIADB_USER: ${MYSQL_USER}
+
+      
+      #je ne peux pas avoir les deux variables de password sinon c est faux
+      #MARIADB_PASSWORD: ${MYSQL_PASSWORD}
+      #je dois lire se fichier et sortir le MARIADB_PASSWORD
+      MARIADB_PASSWORD_FILE: /run/secrets/db_password
+      
+      MARIADB_USER_HOST: "%"
+
+      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+#docker va envoyer un signal periodique a mariadb pour etre sur qu il marche
+    healthcheck:
+      test:
+        [
+#precise que ca sera par shell qu on va test
+          "CMD-SHELL",
+#cette commande va verifier que mariadb est allumer et qu elle peut repondre
+          'mariadb-admin ping -uroot -p"$$(cat /run/secrets/db_root_password)" --silent',
+        ]
+#chaque 10 sec on test
+      interval: 10s
+#si docker ne resssoit pas de reponse dans les 5 ca veut dire ca a bader
+      timeout: 5s
+#il va essayer 5 fois avant de dire que ca a bader
+      retries: 5
+#va commencer apres 30 secondes
+      start_period: 30s
+
+#-----------------------------------------------------------------------
+#WORDPRESS
+#-----------------------------------------------------------------------
+
+  wordpress:
+    build:
+      context: ./requirements/wordpress
+      args:
+        WORDPRESS_PORT: ${WORDPRESS_PORT}
+    image: wordpress:inception
+    container_name: wordpress
+    restart: on-failure
+    networks:
+      - inception
+    volumes:
+      - wordpress_data:/var/www/html
+    secrets:
+      - db_password
+      - wp_admin_password
+      - wp_user_password
+    #a la place de environment je peux utiliser env_files
+    #
+    #env_files : 
+    #   env_files va injecter toute les variables de .env avec leur nom et valeur comme ils
+    #   sont ecrit dans le .env sans rien changer
+    #
+    #environment :
+    #   on definit les variables explicitement cas par cas
+    #
+    environment:
+#      WORDPRESS_DB_HOST: mariadb:${MARIADB_PORT}
+     
+      #essayage d enlevement d une erreur 
+      #ces deux valeurs doivent etre la meme chose chez mariadb
+
+      #cette ligne la elle est fausse, wordpress doit utiliser le meme mot
+      #de passe que mariadb qui previent du MARIADB_PASSWORD_FILE
+      #WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+      WORDPRESS_DB_HOST: mariadb
+
+      WORDPRESS_DB_PASSWORD_FILE: /run/secrets/db_password
+      WORDPRESS_URL: https://${DOMAIN_NAME}
+      WORDPRESS_TITLE: ${WORDPRESS_TITLE}
+      WORDPRESS_ADMIN_USER: ${WORDPRESS_ADMIN_USER}
+      WORDPRESS_ADMIN_PASSWORD_FILE: /run/secrets/wp_admin_password
+      WORDPRESS_ADMIN_EMAIL: ${WORDPRESS_ADMIN_EMAIL}
+      WORDPRESS_USER: ${WORDPRESS_USER}
+      WORDPRESS_USER_EMAIL: ${WORDPRESS_USER_EMAIL}
+      WORDPRESS_USER_PASSWORD_FILE: /run/secrets/wp_user_password
+      WORDPRESS_CONFIG_EXTRA: "define('WP_HOME', 'https://' . $$_SERVER['HTTP_HOST']); define('WP_SITEURL', 'https://' . $$_SERVER['HTTP_HOST']);"
+#ca ca signifie que wordpress va s allumer que quand mariadb est bien allumer
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    healthcheck:
+      test:
+        #la commande que docker va envoyer en arriere plan pour test mon wordpress
+        #cette commande va essayer de faire une connexion TCP
+        #avec le container lui meme sur le port specifier 
+        #
+        ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/${WORDPRESS_PORT}'"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+#-----------------------------------------------------------------------
+#NGINX
+#-----------------------------------------------------------------------
+  nginx:
+    build:
+      context: ./requirements/nginx
+      args:
+        NGINX_PORT: ${NGINX_PORT}
+    image: nginx:inception
+    container_name: nginx
+    restart: on-failure
+    networks:
+      - inception
+    volumes:
+      - wordpress_data:/var/www/html
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
+      NGINX_PORT: ${NGINX_PORT}
+      WORDPRESS_PORT: ${WORDPRESS_PORT}
+    ports:
+      - "${NGINX_PORT}:${NGINX_PORT}"
+    #son healthcheck ici est different que dans les autres containers
+    depends_on: #si wordpress ne s allume pas le nginx ne va pas s allumer
+      wordpress:
+        condition: service_healthy
+#-----------------------------------------------------------------------
+#VOLUMES 
+#-----------------------------------------------------------------------
+volumes:
+  mariadb_data:
+#va utiliser un pilote de stockage par defauts
+    driver: local
+#ca ca signifie que docker doit suivre notre maniere et pas la sienne
+    driver_opts:
+#pas de finition bizzare en . genre .kaka
+      type: none
+#ca va prendre le dossier et ca va faire comme un pointeur dans le container
+#dessus du quelle on va remplir ce dossier
+#on fait ca parceque un container n a pas acces aux choses qu on a sur l ordinateur
+#un container est isoler
+      o: bind
+#chemin a mon dossier physique sur le quelle on va faire le "pointeur"
+      device: ${DATA_PATH}/mariadb
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DATA_PATH}/wordpress
+#-----------------------------------------------------------------------
+#SECRETS
+#-----------------------------------------------------------------------
+
+#les fichier seront creer dans la ram
+#ils seront en lecture seule
+secrets:
+#identifiant de mon password
+  db_password:
+#chemin a mon fichier password
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  wp_admin_password:
+    file: ../secrets/wp_admin_password.txt
+  wp_user_password:
+    file: ../secrets/wp_user_password.txt
+#-----------------------------------------------------------------------
+#NETWORKS
+#-----------------------------------------------------------------------
+#gestion globales des reseaux 
+networks:
+#le nom de notre reseaux qu on declare
+  inception:
+#on va utiliser le mode bridge
+    driver: bridge
+#le mode bridge
+#
+#1 : va isoler les containers du monde exterieur en donnant
+#a chaqun des containers une adresse IP
+#
+#LE PLUS IMPORTANT
+#2 : les containers n ont pas besoin de connaitres les adresse IP
+# ils vont utiliser le nom du service des containers pour se parler
+#
+#3 : le seul point d entree sera NGINX 

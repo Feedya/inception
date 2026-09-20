@@ -1,0 +1,16 @@
+sudo docker build -t fichier . : creer une image d un fichier
+
+sudo systemctl start docker : starter le docker
+
+sudo docker image ls : pour voire les images existante sur mon ordinateur
+
+docker logs "nom du container" : pour voir les logs d un container precis
+
+docker compose -f srcs/compose.yaml logs "nom container" : voir l erreur en details d un container
+
+docker compose -f srcs/compose.yaml ps -a "nom container" : voir l etats d un container
+
+docker inspect --format='{{json .State.Health.Log}}' $(docker compose -f srcs/compose.yaml ps -qa wordpress) : voire historique du container
+
+docker compose -f srcs/compose.yaml top "nom container" : voire processus qui tourne dans un container
+

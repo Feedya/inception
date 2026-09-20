@@ -1,0 +1,37 @@
+#-----------------------------------------------------------------------
+#les [] servent a creer des groupes
+#ce fichier sera lu par plusieurs programmes
+#chaque programme aura son propre chapitre
+#qu il va lire et ne va pas lire les autres
+#-----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------
+[mariadbd]
+#ca contient les regles du moteur qui stoque les donnes
+
+#chemin absolu ou le serveur ecrit son PID
+pid-file                = /run/mysqld/mysqld.pid
+
+#repertoire racin des composants de mariadb 
+basedir                 = /usr
+
+#repertoire ou mariadb va stoquer les base de donnee
+datadir                 = /var/lib/mysql
+
+#sur quelle adresse le serveur mariadb ecoutes les requetes entrante
+bind-address            = 0.0.0.0
+
+#le port reseaux TCP sur le quelle le serveur ecoute
+port                    = 3306
+
+#apres combien de jours mariadb va supprimer l historique des recherches
+expire_logs_days        = 10
+
+#l encodage des charactere, en mode ca peut prendre tout les charactere
+#possible
+character-set-server    = utf8mb4
+
+#les regles de comparaison de tri et chepa quoi
+#en mode mariadb va considerer que "Admin" et "admin" est la meme chose
+collation-server        = utf8mb4_general_ci
+#-----------------------------------------------------------------------

@@ -1,0 +1,16 @@
+----------------------------------------------------------------------------------------------
+1 : wordpress  | /usr/local/bin/docker-entrypoint.sh: line 5: MYSQL_USER: unbound variable
+
+unbound : signifie que la variable n est pas trouver (non definie ou vide)
+
+----------------------------------------------------------------------------------------------
+2 : 
+wordpress  | mariadb-admin: connect to server at 'mariadb' failed
+wordpress  | error: 'Received error packet before completion of TLS handshake. The authenticity of the following error cannot be verified: 1130 - Host '172.18.0.3' is not allowed to connect to this MariaDB server'
+wordpress  | Check that mariadbd is running and that the socket: '/run/mysqld/mysqld.sock' exists!
+
+cette erreur signifie que wordpress arrive a joindre mariadb, mais quelle si rejete
+la connexion (il veut pas)
+
+----------------------------------------------------------------------------------------------
+MARIADB n accepte pas la connexion de wordpress parceque il n y a pas les permission wildcard
