@@ -26,6 +26,12 @@ ARG OS_VERSION=3.23.5
 
 #--------------------------------------------------------------------------------
 #FROM : veut dire prends cette image existante la 
+#on utilise alpine
+#
+#POURQUOI UTILISER ALPINE ?
+#   alpine est bcp pluus leger que debian (5-7mo contre 100 mo)
+#   donc le deploiement sera bcp plus rapide
+
 FROM alpine:${OS_VERSION}
 #--------------------------------------------------------------------------------
 
