@@ -14,8 +14,8 @@ The stack is three containers working together, behind a single web address:
 | **wordpress**| Runs the WordPress site itself (PHP-FPM). Not reachable directly from outside — only nginx talks to it. |
 | **mariadb**  | The database behind WordPress (posts, users, settings). Not reachable directly from outside either. |
 
-The site is available at **`https://pdemont.42.fr`** (replace with your own login if
-different). Visiting `http://pdemont.42.fr` (plain HTTP, port 80) must **not** work —
+The site is available at **`https://fepopadi.42.fr`** (replace with your own login if
+different). Visiting `http://fepopadi.42.fr` (plain HTTP, port 80) must **not** work —
 nginx only listens on 443.
 
 ## 2. Starting and stopping the project
@@ -36,8 +36,8 @@ themselves.
 
 ## 3. Accessing the website and the administration panel
 
-- **Website**: `https://pdemont.42.fr`
-- **Admin dashboard**: `https://pdemont.42.fr/wp-admin`
+- **Website**: `https://fepopadi.42.fr`
+- **Admin dashboard**: `https://fepopadi.42.fr/wp-admin`
 
 Your browser will warn about the certificate ("not trusted" / "self-signed") — this is
 expected, the subject only requires a valid TLSv1.2/1.3 connection, not a
@@ -46,7 +46,7 @@ publicly-trusted certificate. Accept/continue past the warning.
 Two WordPress accounts exist:
 
 - An **administrator** account (username in `srcs/.env` as `WORDPRESS_ADMIN_USER`,
-  currently `pdemont`) — full access to `/wp-admin`. Its username deliberately does
+  currently `fepopadi`) — full access to `/wp-admin`. Its username deliberately does
   **not** contain "admin", as required by the subject.
 - A regular **editor** account (`WORDPRESS_USER` in `srcs/.env`, currently `visitor`) —
   can log in and publish/edit content, but has no admin dashboard access.
@@ -85,14 +85,14 @@ Other quick checks:
 
 ```bash
 # Website responds over HTTPS
-curl -k https://pdemont.42.fr
+curl -k https://fepopadi.42.fr
 
 # Plain HTTP must be refused (no server listening on port 80)
-curl http://pdemont.42.fr
+curl http://fepopadi.42.fr
 
 # TLS version in use
-openssl s_client -connect pdemont.42.fr:443 -tls1_2 </dev/null   # should succeed
-openssl s_client -connect pdemont.42.fr:443 -tls1_1 </dev/null   # should fail/refuse
+openssl s_client -connect fepopadi.42.fr:443 -tls1_2 </dev/null   # should succeed
+openssl s_client -connect fepopadi.42.fr:443 -tls1_1 </dev/null   # should fail/refuse
 
 # Follow logs if something looks wrong
 make logs

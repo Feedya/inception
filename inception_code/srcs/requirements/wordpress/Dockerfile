@@ -5,6 +5,7 @@
 
 ARG OS_VERSION=3.23.5
 
+#on utilise alpine 
 FROM alpine:${OS_VERSION}
 
 ARG WORDPRESS_PORT=9000

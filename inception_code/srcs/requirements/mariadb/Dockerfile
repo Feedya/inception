@@ -28,9 +28,20 @@ ARG OS_VERSION=bookworm
 #si {OS_VERSION} n a pas de valeur
 #---------------------------------------------------------------
 
+#---------------------------------------------------------------
 #on part d une os vierge
+#on utilise debien
 #gosu va remplacer sudo, parceque sudo est trop lent
+#
+#POURQUOI UTULISER DEBIAN BOOKWORM ?
+#   le debien bullseye approche a son fin de support standart (plus de mise a jour)
+#   quand debian bookworm a encore bcp de temps devant lui
+#   
+#   les paquets que bookworm offre sont plus a jour, offrant un support plus etendus
+#
 FROM debian:${OS_VERSION} AS gosu-downloader
+#---------------------------------------------------------------
+
 
 ARG GOSU_VERSION=1.19
 ENV GOSU_VERSION=${GOSU_VERSION}
