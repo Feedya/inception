@@ -1,3 +1,7 @@
+L'Erreur :
+
+quand je lance mariadb n accepte pas la connexion de wordpress (handshake pas bien)
+
 Erreur quand je fais make 
 
  Image mariadb:inception Built 
