@@ -1,0 +1,33 @@
+
+--------------------------------------------------------------------------------
+wp : C'est l'équivalent de git ou docker, mais pour WordPress.
+
+en mode on pourra allumer des commandes wordpress depuis le terminal
+
+--------------------------------------------------------------------------------
+
+set : c est une commande built in en shell
+
+set tout seul va juste afficher toute les variables d environements 
+
+set : "definit" qqc
+
+mais elle a des flags qui vont completement changer se qu elle fait
+
+par exemple set -e va arreter le script si une ligne rate
+
+etc... (on va utiliser principalement set -e)
+en gros elle sert a definir des regles au shell
+c est en gros une regle qu on peut donner a notre shell
+--------------------------------------------------------------------------------
+
+unset : c est l inverse de set, ca va "enlever" qqc
+
+--------------------------------------------------------------------------------
+
+basename :
+ va prendre un PATH en parametre et revoyer le "nom final"
+
+ em mode /bobo/popo/koko ca va renvoyer koko
+
+--------------------------------------------------------------------------------

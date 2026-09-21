@@ -24,6 +24,7 @@ fi
 #mariadb-admin ping : c est une commande propre a Mariadb
 # elle ouvre une connexion TCP 
 #
+#--------------------------------------------------------------------
 while ! mariadb-admin \
     --skip-ssl \
     ping \
@@ -35,6 +36,8 @@ do
     echo "dans boucle connexion"
     sleep 2
 done
+#--------------------------------------------------------------------
+
 
 echo "Connexion MariaDB reussie !"
 
