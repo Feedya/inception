@@ -1,0 +1,5 @@
+pour user:
+https://fedor.42.fr
+pour admin : 
+https://fedor.42.fr/wp-admin/
+et aller regarder le mot de passe dans secrets

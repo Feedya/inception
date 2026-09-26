@@ -36,29 +36,60 @@ do
     echo "dans boucle connexion"
     sleep 2
 done
+
+#    avec le ! devant mariadb-admin ca veut dire que la boucle tourne tant que le ping n a pas reussis 
+#    mariadb-admin                   #mariadb-admin est un outil fourni par MARIADB
+#                                    #qui sert a adminitstrer un serveur (verifier si il tourne) ici on l utilise avec ping
+#    --skip-ssl \                    #ne pas utilise SSL
+#    ping \                          #demande au serveur si il est vivant
+#    -h"mariadb" \                   #-h : host
+#    -u"$WORDPRESS_DB_USER" \        #-u : user
+#    -p"$WORDPRESS_DB_PASSWORD" \    #-p : password
+#    --silent                        #juste le code de retour 
+
+#se que ce while veut dire :
+
+#ca dit a mariadb-admin de faire un ping sans utiliser SSL au serveur "mariadb"
+#et de te connecter en tant que user avec le password
 #--------------------------------------------------------------------
 
 
 echo "Connexion MariaDB reussie !"
 
+#-------------------------------------------------------------------------------------------------------------------------
+#cette fonction vient des images docker officiel
+#
+#son but c est de faire passer un "secret" via un fichier ou directement en variable (<-se qui est faux)
 file_env()
 {
-    local var="$1"
-    local fileVar="${var}_FILE"
-    local def="${2:-}"
-    if [ "${!var:-}" ] && [ "${!fileVar:-}" ]; then
-        echo >&2 "ERROR: both $var and $fileVar are set (but are exclusive)"
+    #local var : on creer une variable qui va exister que dans la fonction
+    local var="$1" #$1 : c est le premier arguments qu on passe a cette fonction
+    local fileVar="${var}_FILE" #on ajoute _FILE au premier arguments
+
+    local def="${2:-}" #on prend le deuxieme arguments $2 le :- est "variable : valeur par defauts"
+                       #si variable existe on prend variable sinon on prend par defaut 
+                       #comme ici on a rien apres le ":-" le def sera une chaine vide
+    
+    #se if verifie si les deux variable var et fileVar sont pas vide alors c est faux et on sort
+    if [ "${!var:-}" ] && [ "${!fileVar:-}" ];
+    then
+        echo >&2 "ERROR: both $var and $fileVar are set (but are exclusive) dans file_env docker_entrypoint de wordpress"
         exit 1
     fi
-    local val="$def"
-    if [ "${!var:-}" ]; then
+    local val="$def" #on reprend la valeur de def (definis en haut)
+    if [ "${!var:-}" ];
+    then
         val="${!var}"
-    elif [ "${!fileVar:-}" ]; then
+    elif [ "${!fileVar:-}" ];
+    then
         val="$(< "${!fileVar}")"
     fi
     export "$var"="$val"
     unset "$fileVar"
 }
+#-------------------------------------------------------------------------------------------------------------------------
+
+
 
 if [ "${1-}" = 'php-fpm83' ] || { self="$(basename "$0")" && [ "$self" = 'docker-ensure-installed.sh' ]; }; then
     uid="$(id -u)"
