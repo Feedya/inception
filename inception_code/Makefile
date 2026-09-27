@@ -218,3 +218,12 @@ re: fclean all
 #-----------------------------------------------------------------------------
 .PHONY: all up down stop start logs ps volumes seed hosts clean fclean re
 #-----------------------------------------------------------------------------
+
+
+#    MESSAGE VINCENT
+#
+#    Bonsoir Vincent, je t ecris pour un petit soucis que j ai eu par rapport a 
+#		mon espace sur les odrinateurs de l ecole, j ai acheter les 10 gb en plus mais je
+#		n ai pas repondu au bot de discord a temps, donc j aimerai savoir se que je dois faire 
+#		pour pouvoir les avoir. 
+
