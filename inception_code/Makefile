@@ -222,8 +222,12 @@ re: fclean all
 
 #    MESSAGE VINCENT
 #
-#    Bonsoir Vincent, je t ecris pour un petit soucis que j ai eu par rapport a 
-#		mon espace sur les odrinateurs de l ecole, j ai acheter les 10 gb en plus mais je
-#		n ai pas repondu au bot de discord a temps, donc j aimerai savoir se que je dois faire 
-#		pour pouvoir les avoir. 
-
+#    Bonjour Vincent, je t ecris pour un petit soucis que j ai par rapport a mes jours 
+#	je planifiais de rendre mon inception aujord'hui mais ma session d'ecole et remplis a ras bord
+#	j'ai essayer de liberer de l'espace de toute maniere differente
+#	mais rien ne m'a liberer assez pour pouvoir mettre ma VM
+#	
+#	rajoutes moi des jours baby boy silteplait
+#
+#
+#

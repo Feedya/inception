@@ -3,7 +3,7 @@
 # check=error=true
 # hadolint global ignore=DL3018
 
-ARG OS_VERSION=3.24.2
+ARG OS_VERSION=3.23.0
 
 FROM alpine:${OS_VERSION}
 

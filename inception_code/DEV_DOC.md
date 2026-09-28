@@ -60,11 +60,11 @@ needed to configure the application lives under `srcs/requirements/`.
    Edit `srcs/.env` and set, at minimum:
 
    ```
-   DATA_PATH=/home/pdemont/data
-   DOMAIN_NAME=pdemont.42.fr
+   DATA_PATH=/home/fepopadi/data
+   DOMAIN_NAME=fedor.42.fr
    ```
 
-   (replace `pdemont` with your own 42 login — this path is where the two named
+   (replace `fepopadi` with your own 42 login — this path is where the two named
    volumes are physically stored on the host, as required by the subject).
 
 3. Secrets (`secrets/db_password.txt`, `db_root_password.txt`, `wp_admin_password.txt`,
@@ -116,7 +116,7 @@ docker volume inspect inception_mariadb_data                     # confirm the h
 
 ```bash
 docker stop $(docker ps -qa); docker rm $(docker ps -qa); docker rmi -f $(docker images -qa); docker volume rm $(docker volume ls -q); docker network rm $(docker network ls -q) 2>/dev/null
-sudo rm -rf /home/pdemont/data/*
+sudo rm -rf /home/fepopadi/data/*
 ```
 
 After this, everything must come back with a single `make` — this is the truest test
@@ -124,10 +124,10 @@ of the setup, worth rehearsing before the defense.
 
 ## 6. Data persistence
 
-- **`wordpress_data`** (named volume) → bind-mounted to `/home/pdemont/data/wordpress`
+- **`wordpress_data`** (named volume) → bind-mounted to `/home/fepopadi/data/wordpress`
   on the host, mounted at `/var/www/html` in both the `wordpress` and `nginx`
   containers (nginx needs read access to serve static files directly).
-- **`mariadb_data`** (named volume) → bind-mounted to `/home/pdemont/data/mariadb` on
+- **`mariadb_data`** (named volume) → bind-mounted to `/home/fepopadi/data/mariadb` on
   the host, mounted at `/var/lib/mysql` in the `mariadb` container.
 - Both are declared as Docker **named volumes** in `compose.yaml` (not bind mounts) —
   see the README's "Docker Volumes vs Bind Mounts" section for why.

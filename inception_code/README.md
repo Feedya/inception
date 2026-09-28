@@ -19,8 +19,8 @@ scratch (no ready-made images from Docker Hub):
   Docker network.
 
 WordPress data (site files) and the MariaDB data (database) are persisted with two
-Docker named volumes, physically stored on the host at `/home/pdemont/data`. The whole
-stack is reachable at `https://pdemont.42.fr`, which resolves to the VM's own loopback
+Docker named volumes, physically stored on the host at `/home/fepopadi/data`. The whole
+stack is reachable at `https://fepopadi.42.fr`, which resolves to the VM's own loopback
 address via `/etc/hosts`.
 
 ## Project Description
@@ -97,7 +97,7 @@ not tracked by Docker as an object of its own. A named volume is a storage objec
 managed by Docker (`docker volume ls`, `docker volume inspect`), with a lifecycle
 independent of any container. This project uses named volumes (`mariadb_data`,
 `wordpress_data`) configured with the `local` driver's bind options
-(`o: bind, device: /home/pdemont/data/...`) — this gets the best of both worlds: the
+(`o: bind, device: /home/fepopadi/data/...`) — this gets the best of both worlds: the
 physical on-host location the subject mandates (`/home/login/data`), while still being
 addressed, listed and inspected as a proper Docker volume rather than an ad hoc mount.
 
@@ -110,11 +110,10 @@ the project's virtual machine:
 ```bash
 git clone <this-repository> inception && cd inception
 cp srcs/.env.example srcs/.env
-# edit srcs/.env: set DATA_PATH=/home/pdemont/data and DOMAIN_NAME=pdemont.42.fr
 make
 ```
 
-Then open `https://pdemont.42.fr` in a browser (self-signed certificate warning is
+Then open `https://fepopadi.42.fr` in a browser (self-signed certificate warning is
 expected).
 
 ## Resources

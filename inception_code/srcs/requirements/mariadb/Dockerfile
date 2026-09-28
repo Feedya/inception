@@ -79,7 +79,7 @@ COPY --from=gosu-downloader /usr/local/bin/gosu /usr/local/bin/gosu
 
 ENV LANG=C.UTF-8
 
-LABEL org.opencontainers.image.authors="Demont Pieric" \
+LABEL org.opencontainers.image.authors="Popadin Fedor" \
 	  org.opencontainers.image.title="MariaDB Database Inception" \
 	  org.opencontainers.image.description="MariaDb Database for relational SQL" \
 	  org.opencontainers.image.licenses="MIT" \
